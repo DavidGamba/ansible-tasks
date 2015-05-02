@@ -1,0 +1,7 @@
+= Ansible tasks
+
+Repository to hold my personal dev machine setup tasks.
+
+* Neovim:
++
+`ansible-playbook neovim.yml --extra-vars="hosts=my_host"`
