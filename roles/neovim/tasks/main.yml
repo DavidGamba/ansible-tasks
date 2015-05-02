@@ -1,0 +1,37 @@
+---
+- name: Install neovim prerequisites
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  yum: name={{ item }} state=present
+  with_items:
+    - autoconf
+    - automake
+    - cmake
+    - gcc
+    - gcc-c++
+    - libtool
+    - pkgconfig
+- name: Install neovim prerequisites
+  apt: name={{ item }} state=latest
+  with_items:
+    - libtool
+    - autoconf
+    - automake
+    - cmake
+    - g++
+    - pkg-config
+    - unzip
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- name: clone the repo
+  git: repo=https://github.com/neovim/neovim.git
+       dest={{ ansible_env.HOME }}/code/personal/git/neovim
+       update=yes
+  register: gitclone
+- name: create dest dir
+  file: state=directory path={{ ansible_env.HOME }}/opt/neovim
+- name: build
+  command: "{{ item }} chdir={{ ansible_env.HOME }}/code/personal/git/neovim"
+  with_items:
+    - rm -r build
+    - make clean
+    - make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH={{ ansible_env.HOME }}/opt/neovim" CMAKE_BUILD_TYPE=Release install
+  when: gitclone.changed

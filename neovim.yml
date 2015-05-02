@@ -1,0 +1,5 @@
+---
+# run with: ansible-playbook neovim.yml --extra-vars="hosts=my_host"
+- hosts: "{{ hosts }}"
+  roles:
+  - neovim
